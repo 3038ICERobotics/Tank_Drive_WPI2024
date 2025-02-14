@@ -4,20 +4,22 @@
 
 package frc.robot;
 
+//Rev import 
+//https://software-metadata.revrobotics.com/REVLib-2024.json
  import com.revrobotics.CANSparkBase.IdleMode;
  import com.revrobotics.CANSparkLowLevel.MotorType;
  import com.revrobotics.CANSparkMax;
- import com.revrobotics.RelativeEncoder;
+ //import com.revrobotics.RelativeEncoder;
 
-import edu.wpi.first.util.sendable.SendableRegistry;
-import edu.wpi.first.wpilibj.DigitalInput;
+// import edu.wpi.first.util.sendable.SendableRegistry;
+// import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
+//import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.cameraserver.CameraServer;
+//import edu.wpi.first.cameraserver.CameraServer;
 
 
 
@@ -43,8 +45,6 @@ public class Robot extends TimedRobot {
   //Declaring motors
   CANSparkMax fLeft = new CANSparkMax(25, MotorType.kBrushed);
   CANSparkMax bLeft = new CANSparkMax(10, MotorType.kBrushed);
-
-  
   CANSparkMax fRight = new CANSparkMax(13 , MotorType.kBrushed);
   CANSparkMax bRight = new CANSparkMax(2, MotorType.kBrushed);
   CANSparkMax flyWheel = new CANSparkMax(15, MotorType.kBrushed);
@@ -72,7 +72,8 @@ public class Robot extends TimedRobot {
   
   // double driveSpeed = rJoystick.getZ();
   // double throwerSpeed = lJoystick.getZ();
-
+//time
+double time;
   //Speed Variables
   double driveSpeed;
   boolean driveinverted = false;
@@ -102,8 +103,10 @@ public class Robot extends TimedRobot {
     //Set back motors to follow front
     bLeft.follow(fLeft);
     bRight.follow(fRight);
-    bLeft.setInverted(true);
-    fLeft.setInverted(true);
+    bRight.setInverted(true);
+    fRight.setInverted(true);
+    //Invert Flywheel
+    flyWheel.setInverted(true);
     //Camera
     //CameraServer.startAutomaticCapture();
 
@@ -174,75 +177,77 @@ public class Robot extends TimedRobot {
     bRight.setIdleMode(IdleMode.kBrake);
 
     //Set autoChoice
-    autoChoice = 2;
+    autoChoice = 1;
+    //set time
+    time = 0;
   }
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-  //   if(autoChoice == 0){
-  //     diffDrive.tankDrive(0,0);
-  //   }
-  //   else if(autoChoice == 1){
-  //     if (leftDriveEncoder.getPosition() > -50) {
-  //       diffDrive.tankDrive(-0.5,-0.5);
-  //     }
-  //     else if (leftDriveEncoder.getPosition() < -50 &&leftDriveEncoder.getPosition() > -155) {
-  //       diffDrive.tankDrive(-0.1,-0.5);
-  //     }
-  //     else if (leftDriveEncoder.getPosition() < -155 &&leftDriveEncoder.getPosition() > -205) {
-  //       diffDrive.tankDrive(-0.5,-0.5);
-  //     }
-  //     else if (leftDriveEncoder.getPosition() < -205 &&leftDriveEncoder.getPosition() > -310) {
-  //       diffDrive.tankDrive(-0.1,-0.5);
-  //     }
-  //     else if (leftDriveEncoder.getPosition() < -310) {
-  //       leftDriveEncoder.setPosition(0);
-
-  //       rightDriveEncoder.setPosition(0);
-  //     }
-  //  if(autoChoice == 1){
-  // //Center Position  
-  //   if (leftDriveEncoder.getPosition() > -75) {
-  //        diffDrive.tankDrive(-0.5,-0.5);
-  //   }
-  //   else if (leftDriveEncoder.getPosition() < -75){
-  //    diffDrive.tankDrive(0,0);
-  //   }
-  // }
-  // //Left Position(non working)
-  //   else if(autoChoice == 2){
-  //     if (leftDriveEncoder.getPosition() > -50){
-  //         diffDrive.tankDrive(-0.5,-0.5);
-  //     }
-  //     else if (leftDriveEncoder.getPosition() < -50 && leftDriveEncoder.getPosition() > -65){
-  //         diffDrive.tankDrive(0.5,-0.5);
-  //     }
-  //     else if (leftDriveEncoder.getPosition() < -65 && leftDriveEncoder.getPosition() > -135){
-  //         diffDrive.tankDrive(-0.5,-0.5);
-  //     }
-  //     else if (leftDriveEncoder.getPosition() < -135){
-  //         diffDrive.tankDrive(0,0);
-  //     }
-  //   }
-  //   //Right Position
-  //   else if(autoChoice == 3){
-  //     if (rightDriveEncoder.getPosition() > -80){
-  //         diffDrive.tankDrive(-0.5,-0.5);
-  //     }
-  //     else if (rightDriveEncoder.getPosition() < -80 && rightDriveEncoder.getPosition() > -95){
-  //         diffDrive.tankDrive(-0.5,0.5);
-  //     }
-  //     else if (rightDriveEncoder.getPosition() < -95 && rightDriveEncoder.getPosition() > -145){
-  //         diffDrive.tankDrive(-0.5,-0.5);
-  //     }
-  //     else if (rightDriveEncoder.getPosition() < -145){
-  //         diffDrive.tankDrive(0,0);
-  //     }
-  //   }
-  // }
-  //   else if(autoChoice == 2){
-
+    time = (time + 0.02);
+  //Directions are relative to where the robot is facing
+  //Left
+if (autoChoice == 0){
+  if (time <= 2.5){
+   diffDrive.tankDrive(0.5,0.5); 
+  flyWheel.set(0);
+  }
+  else if(time <= 2.8 && time > 2.5){
+    diffDrive.tankDrive(0.75,-0.75);
+    flyWheel.set(0);
+  }
+  else if(time <= 4.8 && time > 2.8){
+    diffDrive.tankDrive(0.5,0.5);
+    flyWheel.set(0);
+  }
+  else if(time > 4.8 && time <= 5.3){
+    diffDrive.tankDrive(0,0);
+    flyWheel.set(1);
+  }
+  else if(time > 5.3){
+    diffDrive.tankDrive(0,0);
+    flyWheel.set(0);
+  }
+}
+//Right
+if (autoChoice == 1){
+  if (time <= 2.5){
+   diffDrive.tankDrive(0.5,0.5); 
+  flyWheel.set(0);
+  }
+  else if(time <= 2.8 && time > 2.5){
+    diffDrive.tankDrive(-0.75,0.75);
+    flyWheel.set(0);
+  }
+  else if(time <= 4.8 && time > 2.8){
+    diffDrive.tankDrive(0.5,0.5);
+    flyWheel.set(0);  
+  }
+ else if(time > 4.8 && time <= 5.3){
+    diffDrive.tankDrive(0,0);
+    flyWheel.set(1);
+  }
+  else if(time > 5.3){
+    diffDrive.tankDrive(0,0);
+    flyWheel.set(0);
+  }
+}
+//Center
+if (autoChoice == 2){
+  if (time < 3.5){
+    diffDrive.tankDrive(0.5,0.5);
+    flyWheel.set(0);  
+  }
+  else if (time >= 3.5 && time < 4){
+    diffDrive.tankDrive(0,0);
+    flyWheel.set(1);
+  }
+  else if (time >= 4){
+    diffDrive.tankDrive(0,0);
+    flyWheel.set(0);
+  }
+}
   //   }
    }
 
@@ -300,7 +305,7 @@ public class Robot extends TimedRobot {
     }
     //Flywheel
     if (rJoystick.getRawButton(3)){
-      flyWheel.set(-1);
+      flyWheel.set(1);
     } 
     else{
       flyWheel.set(0);
@@ -358,7 +363,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically when disabled. */
   @Override
   public void disabledPeriodic() {}
-
+  
   /** This function is called once when test mode is enabled. */
   @Override
   public void testInit() {}
