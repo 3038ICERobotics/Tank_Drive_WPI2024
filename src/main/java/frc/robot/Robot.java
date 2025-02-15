@@ -144,8 +144,10 @@ double time;
     //Put Values into Smart Dashboard
     // SmartDashboard.putNumber("Left Encoder", leftDriveEncoder.getPosition());
     // SmartDashboard.putNumber("Right Encoder", rightDriveEncoder.getPosition());
-    SmartDashboard.putNumber("Auto Choice", autoChoice);
-
+    SmartDashboard.putNumber("Time", time);
+    SmartDashboard.putNumber("Speed", driveSpeed);
+    // SmartDashboard.putNumber("Auto Choice", autoChoice);
+    // autoChoice = SmartDashboard.getNumber("Auto Choice", -1);
   }
 
   /**
@@ -176,8 +178,7 @@ double time;
     bLeft.setIdleMode(IdleMode.kBrake);
     bRight.setIdleMode(IdleMode.kBrake);
 
-    //Set autoChoice
-    autoChoice = 1;
+
     //set time
     time = 0;
   }
@@ -185,7 +186,10 @@ double time;
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    time = (time + 0.02);
+    SmartDashboard.putNumber("Auto Choice", autoChoice);
+    autoChoice = SmartDashboard.getNumber("Auto Choice", -1);
+  //Time
+  time = (time + 0.02);
   //Directions are relative to where the robot is facing
   //Left
 if (autoChoice == 0){
@@ -274,6 +278,8 @@ if (autoChoice == 2){
   /** This function is called periodically during operator control. */
    @Override
   public void teleopPeriodic() {
+    //Time
+    time = (time + 0.02);
     //Change drive speed
     if (rJoystick.getRawButtonPressed(1)){
       if (driveSpeed > 0){
@@ -358,6 +364,7 @@ if (autoChoice == 2){
     fRight.setIdleMode(IdleMode.kCoast);
     bLeft.setIdleMode(IdleMode.kCoast);
     bRight.setIdleMode(IdleMode.kCoast);
+    time = 0;
   }
 
   /** This function is called periodically when disabled. */
