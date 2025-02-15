@@ -73,20 +73,29 @@ public class Robot extends TimedRobot {
   // double driveSpeed = rJoystick.getZ();
   // double throwerSpeed = lJoystick.getZ();
 //time
-double time;
+double time;  
   //Speed Variables
   double driveSpeed;
-  boolean driveinverted = false;
+ // boolean driveinverted = false;
 
   //Auto choice
-  double autoChoice;
-
+  String autoChoice;
+  private static final String kCoast = "Coast/Display";
+  private static final String kLeftAuto = "Left";
+  private static final String kRightAuto = "Right";
+  private static final String kCenterAuto = "Center";
+  private final SendableChooser<String> AutoChooser = new SendableChooser<>();
   /**
    * This function is run when the robot is first started up and should be used for any
    * initialization code.
    */
   @Override
   public void robotInit() {
+   m_chooser.setDefaultOption("Center", kCenterAuto);
+   m_chooser.addOption("Left", kLeftAuto);
+   m_chooser.addOption("Right", kRightAuto);
+   m_chooser.addOption("Coast/Display", kCoast);
+   SmartDashboard.putData("AutoChoice", m_chooser);
     //Choosing Auto
     // m_chooser.setDefaultOption("Center", kCenterAuto);
     // m_chooser.addOption("R-Amp", kRedAmpAuto);
@@ -146,7 +155,9 @@ double time;
     // SmartDashboard.putNumber("Right Encoder", rightDriveEncoder.getPosition());
     SmartDashboard.putNumber("Time", time);
     SmartDashboard.putNumber("Speed", driveSpeed);
-    // SmartDashboard.putNumber("Auto Choice", autoChoice);
+    
+    // autoChoice = SmartDashboard.getNumber("Auto", -1);
+
     // autoChoice = SmartDashboard.getNumber("Auto Choice", -1);
   }
 
@@ -162,9 +173,11 @@ double time;
    */
   @Override
   public void autonomousInit() {
-    m_autoSelected = m_chooser.getSelected();
-    // m_autoSelected = SmartDashboard.getString("Auto Selector", kCenterAuto );
-    System.out.println("Auto selected: " + m_autoSelected);
+  
+    autoChoice = m_chooser.getSelected();
+
+    //m_autoSelected = SmartDashboard.getString("Auto Selector", kCenterAuto );
+    //System.out.println("Auto selected: " + m_autoSelected);
 
      //Start Encoders at Position Zero
     // leftDriveEncoder.setPosition(0);
@@ -186,59 +199,58 @@ double time;
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {
-    SmartDashboard.putNumber("Auto Choice", autoChoice);
-    autoChoice = SmartDashboard.getNumber("Auto Choice", -1);
-  //Time
+    
+    //Time
   time = (time + 0.02);
   //Directions are relative to where the robot is facing
   //Left
-if (autoChoice == 0){
-  if (time <= 2.5){
+if (autoChoice == kLeftAuto){
+  if (time <= 2.8){
    diffDrive.tankDrive(0.5,0.5); 
   flyWheel.set(0);
   }
-  else if(time <= 2.8 && time > 2.5){
+  else if(time <= 3.1 && time > 2.8){
     diffDrive.tankDrive(0.75,-0.75);
     flyWheel.set(0);
   }
-  else if(time <= 4.8 && time > 2.8){
+  else if(time <= 5.6 && time > 3.1){
     diffDrive.tankDrive(0.5,0.5);
     flyWheel.set(0);
   }
-  else if(time > 4.8 && time <= 5.3){
+  else if(time > 5.6 && time <= 6){
     diffDrive.tankDrive(0,0);
     flyWheel.set(1);
   }
-  else if(time > 5.3){
+  else if(time > 6){
     diffDrive.tankDrive(0,0);
     flyWheel.set(0);
   }
 }
 //Right
-if (autoChoice == 1){
-  if (time <= 2.5){
+if (autoChoice == kRightAuto){
+  if (time <= 2.8){
    diffDrive.tankDrive(0.5,0.5); 
   flyWheel.set(0);
   }
-  else if(time <= 2.8 && time > 2.5){
+  else if(time <= 3.1 && time > 2.8){
     diffDrive.tankDrive(-0.75,0.75);
     flyWheel.set(0);
   }
-  else if(time <= 4.8 && time > 2.8){
+  else if(time <= 5.6 && time > 3.1){
     diffDrive.tankDrive(0.5,0.5);
     flyWheel.set(0);  
   }
- else if(time > 4.8 && time <= 5.3){
+ else if(time > 5.6 && time <= 6){
     diffDrive.tankDrive(0,0);
     flyWheel.set(1);
   }
-  else if(time > 5.3){
+  else if(time > 6){
     diffDrive.tankDrive(0,0);
     flyWheel.set(0);
   }
 }
 //Center
-if (autoChoice == 2){
+if (autoChoice == kCenterAuto){
   if (time < 3.5){
     diffDrive.tankDrive(0.5,0.5);
     flyWheel.set(0);  
@@ -251,6 +263,31 @@ if (autoChoice == 2){
     diffDrive.tankDrive(0,0);
     flyWheel.set(0);
   }
+}
+//Coast/Display
+if (autoChoice == kCoast){
+  if (time < 3.5){
+    diffDrive.tankDrive(0.5,0.5);
+  }
+  else if(time >= 3.5 && time < 3.75){
+    diffDrive.tankDrive(1,-1);
+  }
+  else if (time >=3.75 && time < 6){
+    diffDrive.tankDrive(0.5,0.5);
+  }
+  else if (time >=6 && time < 8){
+    diffDrive.tankDrive(0.25,0.25);
+  }
+  else if (time >= 8 && time < 10){
+    diffDrive.tankDrive(0.8,0.8);
+  }
+  else if (time >= 10 && time < 14){
+    diffDrive.tankDrive(0.6,0.2);
+  }
+  else if (time >=14){
+    time = 0;
+  }
+
 }
   //   }
    }
@@ -293,15 +330,6 @@ if (autoChoice == 2){
     // else if (rJoystick.getRawButtonPressed(3)){
     //   driveSpeed = (1);
     // }
-
-    //Changing drive inversion
-    if (rJoystick.getRawButtonPressed(2)){
-       driveinverted = true;
-    }
-    if (lJoystick.getRawButtonPressed(2)){
-       driveinverted = false;
-    }
-
     //Limiting drive speed
     if (driveSpeed > 1){
       driveSpeed = (1);
@@ -310,7 +338,7 @@ if (autoChoice == 2){
       driveSpeed = (0);
     }
     //Flywheel
-    if (rJoystick.getRawButton(3)){
+    if (lJoystick.getRawButton(2)){
       flyWheel.set(1);
     } 
     else{
@@ -318,12 +346,7 @@ if (autoChoice == 2){
     }  
     //Tank Drive
     //diffDrive.tankDrive(rJoystick.getY() * -0.5, lJoystick.getY() * -0.5);
-     if(driveinverted == false){
         diffDrive.tankDrive(rJoystick.getY() * driveSpeed * -1, lJoystick.getY() * driveSpeed * -1);
-     }
-     else if(driveinverted == true){
-    diffDrive.tankDrive(rJoystick.getY() * driveSpeed,lJoystick.getY() * driveSpeed);
-    }
     //Regulate Speed
     //driveSpeed = (-rJoystick.getZ() + 1) / 2;
     
