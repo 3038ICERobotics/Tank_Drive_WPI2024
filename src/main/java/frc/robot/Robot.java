@@ -308,7 +308,7 @@ if (autoChoice == kCoast){
     //TopThrowerL.set(0);
 
     //Set initial speed
-    driveSpeed = .5;
+    driveSpeed = .2;
 
   }
 
@@ -338,15 +338,21 @@ if (autoChoice == kCoast){
       driveSpeed = (0);
     }
     //Flywheel
+    double fwspeed=0.3;// SmartDashboard.getNumber("flywheel",0);
     if (lJoystick.getRawButton(2)){
-      flyWheel.set(1);
+      flyWheel.set(fwspeed);
     } 
+    else if (rJoystick.getRawButton(2)){
+      flyWheel.set(-fwspeed);
+    }
     else{
       flyWheel.set(0);
     }  
+    SmartDashboard.putNumber("flywheel", fwspeed);
     //Tank Drive
     //diffDrive.tankDrive(rJoystick.getY() * -0.5, lJoystick.getY() * -0.5);
         diffDrive.tankDrive(rJoystick.getY() * driveSpeed * -1, lJoystick.getY() * driveSpeed * -1);
+        diffDrive.tankDrive(rJoystick.getY() * 0.5 * -1, lJoystick.getY() * driveSpeed * -1);
     //Regulate Speed
     //driveSpeed = (-rJoystick.getZ() + 1) / 2;
     
