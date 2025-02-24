@@ -40,7 +40,7 @@ public class Robot extends TimedRobot {
   private String m_autoSelected;
   private final SendableChooser<String> m_chooser = new SendableChooser<>();
   //Declare Joysticks
-  private Joystick lJoystick = new Joystick(0);
+  private Joystick lJoystick = new Joystick(2);
   private Joystick rJoystick = new Joystick(1);
   //Declaring motors
   CANSparkMax fLeft = new CANSparkMax(25, MotorType.kBrushed);
@@ -202,49 +202,49 @@ double time;
     
     //Time
   time = (time + 0.02);
-  //Directions are relative to where the robot is facing
+  //Directions are relative to how the robot is facing
   //Left
 if (autoChoice == kLeftAuto){
-  if (time <= 2.8){
+  if (time <= 3.15){
    diffDrive.tankDrive(0.5,0.5); 
   flyWheel.set(0);
   }
-  else if(time <= 3.1 && time > 2.8){
+  else if(time <= 3.45 && time > 3.15){
     diffDrive.tankDrive(0.75,-0.75);
     flyWheel.set(0);
   }
-  else if(time <= 5.6 && time > 3.1){
+  else if(time <= 6.35 && time > 3.45){
     diffDrive.tankDrive(0.5,0.5);
     flyWheel.set(0);
   }
-  else if(time > 5.6 && time <= 6){
+  else if(time > 6.35 && time <= 6.75){
     diffDrive.tankDrive(0,0);
-    flyWheel.set(1);
+    flyWheel.set(0.6);
   }
-  else if(time > 6){
+  else if(time > 6.75){
     diffDrive.tankDrive(0,0);
     flyWheel.set(0);
   }
 }
 //Right
 if (autoChoice == kRightAuto){
-  if (time <= 2.8){
+  if (time <= 3.3){
    diffDrive.tankDrive(0.5,0.5); 
   flyWheel.set(0);
   }
-  else if(time <= 3.1 && time > 2.8){
+  else if(time <= 3.6 && time > 3.3){
     diffDrive.tankDrive(-0.75,0.75);
     flyWheel.set(0);
   }
-  else if(time <= 5.6 && time > 3.1){
-    diffDrive.tankDrive(0.5,0.5);
+  else if(time <= 6.5 && time > 3.6){
+    diffDrive.tankDrive(0.6,0.6);
     flyWheel.set(0);  
   }
- else if(time > 5.6 && time <= 6){
+ else if(time > 6.5 && time <= 6.9){
     diffDrive.tankDrive(0,0);
     flyWheel.set(1);
   }
-  else if(time > 6){
+  else if(time > 6.9){
     diffDrive.tankDrive(0,0);
     flyWheel.set(0);
   }
@@ -257,7 +257,7 @@ if (autoChoice == kCenterAuto){
   }
   else if (time >= 3.5 && time < 4){
     diffDrive.tankDrive(0,0);
-    flyWheel.set(1);
+    flyWheel.set(0.6);
   }
   else if (time >= 4){
     diffDrive.tankDrive(0,0);
@@ -308,7 +308,7 @@ if (autoChoice == kCoast){
     //TopThrowerL.set(0);
 
     //Set initial speed
-    driveSpeed = .2;
+    driveSpeed = .6;
 
   }
 
@@ -338,7 +338,7 @@ if (autoChoice == kCoast){
       driveSpeed = (0);
     }
     //Flywheel
-    double fwspeed=0.3;// SmartDashboard.getNumber("flywheel",0);
+    double fwspeed=1;// SmartDashboard.getNumber("flywheel",0);
     if (lJoystick.getRawButton(2)){
       flyWheel.set(fwspeed);
     } 
@@ -352,7 +352,7 @@ if (autoChoice == kCoast){
     //Tank Drive
     //diffDrive.tankDrive(rJoystick.getY() * -0.5, lJoystick.getY() * -0.5);
         diffDrive.tankDrive(rJoystick.getY() * driveSpeed * -1, lJoystick.getY() * driveSpeed * -1);
-        diffDrive.tankDrive(rJoystick.getY() * 0.5 * -1, lJoystick.getY() * driveSpeed * -1);
+        //diffDrive.tankDrive(rJoystick.getY() * 0.5 * -1, lJoystick.getY() * driveSpeed * -1);
     //Regulate Speed
     //driveSpeed = (-rJoystick.getZ() + 1) / 2;
     
