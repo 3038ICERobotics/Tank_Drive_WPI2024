@@ -94,7 +94,7 @@ double time;
    m_chooser.setDefaultOption("Center", kCenterAuto);
    m_chooser.addOption("Left", kLeftAuto);
    m_chooser.addOption("Right", kRightAuto);
-   m_chooser.addOption("Coast/Display", kCoast);
+   m_chooser.addOption("Coast/Display(ignore)", kCoast);
    SmartDashboard.putData("AutoChoice", m_chooser);
     //Choosing Auto
     // m_chooser.setDefaultOption("Center", kCenterAuto);
@@ -267,25 +267,7 @@ if (autoChoice == kCenterAuto){
 //Coast/Display
 if (autoChoice == kCoast){
   if (time < 3.5){
-    diffDrive.tankDrive(0.5,0.5);
-  }
-  else if(time >= 3.5 && time < 3.75){
-    diffDrive.tankDrive(1,-1);
-  }
-  else if (time >=3.75 && time < 6){
-    diffDrive.tankDrive(0.5,0.5);
-  }
-  else if (time >=6 && time < 8){
-    diffDrive.tankDrive(0.25,0.25);
-  }
-  else if (time >= 8 && time < 10){
-    diffDrive.tankDrive(0.8,0.8);
-  }
-  else if (time >= 10 && time < 14){
-    diffDrive.tankDrive(0.6,0.2);
-  }
-  else if (time >=14){
-    time = 0;
+
   }
 
 }
@@ -320,12 +302,12 @@ if (autoChoice == kCoast){
     //Change drive speed
     if (rJoystick.getRawButtonPressed(1)){
       if (driveSpeed > 0){
-        driveSpeed = (driveSpeed - .2);     
+        driveSpeed = (driveSpeed - .20);     
       }
     }
     else if (lJoystick.getRawButtonPressed(1)){
       if (driveSpeed < 1)
-      driveSpeed = (driveSpeed + .2);
+      driveSpeed = (driveSpeed + .20);
     }
     // else if (rJoystick.getRawButtonPressed(3)){
     //   driveSpeed = (1);
@@ -340,7 +322,7 @@ if (autoChoice == kCoast){
     //Flywheel
     double fwspeed=1;// SmartDashboard.getNumber("flywheel",0);
     if (lJoystick.getRawButton(2)){
-      flyWheel.set(fwspeed);
+      flyWheel.set(1);
     } 
     else if (rJoystick.getRawButton(2)){
       flyWheel.set(-fwspeed);
